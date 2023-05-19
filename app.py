@@ -1,3 +1,12 @@
+import streamlit as st
+from PyPDF2 import PdfReader
+from langchain.agents import create_csv_agent
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.vectorstores import Pinecone
+from langchain import VectorDBQA, OpenAI
+import pinecone
+
 def main():
     st.set_page_config(page_title="Ask your Data")
     st.header("Ask your Data 💬")
