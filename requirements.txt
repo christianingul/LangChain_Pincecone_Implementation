@@ -8,3 +8,4 @@ openai
 tabulate
 pinecone-client
 PyPDF2 
+tiktoken
