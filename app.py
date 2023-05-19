@@ -11,6 +11,20 @@ def main():
     st.set_page_config(page_title="Ask your Data")
     st.header("Ask your Data 💬")
 
+    password_secret = st.secrets.get("PASSWORD")
+    openai_secret = st.secrets.get("openai")
+    pinecone_secret = st.secrets.get("pinecone")
+    pinecone_env = st.secrets.get("environment")
+
+    if password_secret is None or openai_secret or pinecone_secret or pinecone_env is None:
+        st.error("Required secrets are missing. Please check your secrets configuration.")
+        st.stop()
+
+    password = st.text_input("Enter password:", type="password")
+    if password != password_secret.get("password"):
+        st.error("Reach out to cingul@usc.edu for password")
+        st.stop()
+
     file_type = st.radio("Select file type:", ("CSV", "PDF"))
 
     if file_type == "CSV":
@@ -30,7 +44,16 @@ def pdf_file_handling():
             st.write(response)
 
 def process_pdf_and_run_agent(user_pdf, user_question):
-    pinecone.init(api_key='82e61102-f1d3-4a95-9ce3-8dd53f7dfa3b', environment='asia-southeast1-gcp-free')
+
+    openai_secret = st.secrets.get("openai")
+    pinecone_secret = st.secrets.get("pinecone")
+    pinecone_env = st.secrets.get("environment")
+    
+    openai_api_key = openai_secret.get("key")
+    pinecone_api_key = pinecone_secret.get("key")
+    pinecone_environment = pinecone_env.get("key")
+
+    pinecone.init(api_key=pinecone_api_key, environment=pinecone_environment)
 
     pdf_reader = PdfReader(user_pdf)
     text = ""
@@ -47,10 +70,12 @@ def process_pdf_and_run_agent(user_pdf, user_question):
 
     chunks = text_splitter.split_text(text)
 
-    embeddings = OpenAIEmbeddings(openai_api_key="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")
+    embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key
+)
     docsearch = Pinecone.from_texts(chunks, embeddings, index_name="pdf-embeddings-index")
 
-    qa = VectorDBQA.from_chain_type(llm=OpenAI(model_name='gpt-3.5-turbo', openai_api_key="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"),
+    qa = VectorDBQA.from_chain_type(llm=OpenAI(model_name='gpt-3.5-turbo', openai_api_key=openai_api_key
+),
                                     chain_type="stuff", vectorstore=docsearch, return_source_documents=True)
     response = qa({"query": user_question})
 
@@ -73,7 +98,12 @@ def csv_file_handling():
 
 #This one is linked back to the .csv_py, where it takes the user_csv, and installs the pandas_agent.
 def create_agent(user_csv):
-    openai = OpenAI(openai_api_key="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", temperature=0, model_name='gpt-3.5-turbo')
+    
+    openai_secret = st.secrets.get("openai")
+    openai_api_key = openai_secret.get("key")
+    
+    openai = OpenAI(openai_api_key=openai_api_key
+                    , temperature=0, model_name='gpt-3.5-turbo')
     csv_agent = create_csv_agent(openai, path=user_csv, verbose=True)
     return csv_agent
 
