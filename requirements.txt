@@ -7,5 +7,4 @@ langchain
 openai
 tabulate
 pinecone-client
-pinecone
 PyPDF2 
