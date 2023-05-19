@@ -22,7 +22,7 @@ def main():
 
     password = st.text_input("Enter password:", type="password")
     if password != password_secret.get("password"):
-        st.error("You can reach out to cingul@usc.edu for the password")
+        st.error("You can reach out to cingul@usc.edu for a password")
         st.stop()
 
     file_type = st.radio("Select file type:", ("CSV", "PDF"))
