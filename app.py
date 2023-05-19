@@ -1,12 +1,3 @@
-import streamlit as st
-from PyPDF2 import PdfReader
-from langchain.agents import create_csv_agent
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import Pinecone
-from langchain import VectorDBQA, OpenAI
-import pinecone
-
 def main():
     st.set_page_config(page_title="Ask your Data")
     st.header("Ask your Data 💬")
@@ -16,7 +7,7 @@ def main():
     pinecone_secret = st.secrets.get("pinecone")
     pinecone_env = st.secrets.get("environment")
 
-    if password_secret is None or openai_secret or pinecone_secret or pinecone_env is None:
+    if password_secret is None or openai_secret is None or pinecone_secret is None or pinecone_env is None:
         st.error("Required secrets are missing. Please check your secrets configuration.")
         st.stop()
 
@@ -45,13 +36,9 @@ def pdf_file_handling():
 
 def process_pdf_and_run_agent(user_pdf, user_question):
 
-    openai_secret = st.secrets.get("openai")
-    pinecone_secret = st.secrets.get("pinecone")
-    pinecone_env = st.secrets.get("environment")
-    
-    openai_api_key = openai_secret.get("key")
-    pinecone_api_key = pinecone_secret.get("key")
-    pinecone_environment = pinecone_env.get("key")
+    openai_api_key = st.secrets["openai"]
+    pinecone_api_key = st.secrets["pinecone"]
+    pinecone_environment = st.secrets["environment"]
 
     pinecone.init(api_key=pinecone_api_key, environment=pinecone_environment)
 
@@ -98,10 +85,9 @@ def csv_file_handling():
 
 #This one is linked back to the .csv_py, where it takes the user_csv, and installs the pandas_agent.
 def create_agent(user_csv):
-    
-    openai_secret = st.secrets.get("openai")
-    openai_api_key = openai_secret.get("key")
-    
+
+    openai_api_key = st.secrets["openai"]
+
     openai = OpenAI(openai_api_key=openai_api_key
                     , temperature=0, model_name='gpt-3.5-turbo')
     csv_agent = create_csv_agent(openai, path=user_csv, verbose=True)
