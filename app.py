@@ -97,7 +97,7 @@ def csv_file_handling():
 
 #This one is linked back to the .csv_py, where it takes the user_csv, and installs the pandas_agent.
 def create_agent(user_csv):
-    
+
     openai_secret = st.secrets.get("openai")
     openai_api_key = openai_secret.get("key")
 
