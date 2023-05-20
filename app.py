@@ -33,7 +33,7 @@ def main():
         pdf_file_handling()
 
 def pdf_file_handling():
-    st.markdown('### PDF File Question & Answering💬)')
+    st.markdown('### PDF Question & Answering 💬')
     st.markdown('''
         Upload your PDF file using the file uploader below. Make sure the PDF file contains the relevant data you want to ask questions about.
         
