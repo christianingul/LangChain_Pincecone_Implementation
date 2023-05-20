@@ -50,7 +50,7 @@ def pdf_file_handling():
 
         - Use PDF files that are text-based rather than scanned images. Text-based PDFs provide better results as the text can be extracted accurately.
         - Verify that the PDF is properly formatted and readable. In some cases, poorly formatted or corrupted PDFs may not yield accurate results.
-        - NOTE, the LLM answer is limited to the quality of your prompt, so please spend time prompt engineering.
+        - NOTE, the LLM answer is limited to the quality of your prompt, so please spend time prompt engineering. Also, the LLM can only answer questions related to your upload.
         ''')
     user_pdf = st.file_uploader("Upload your PDF file", type="pdf")
 
@@ -122,7 +122,7 @@ def csv_file_handling():
         - Organize your data in a tabular format, with each column representing a specific attribute or feature.
         - Make sure your CSV file doesn't contain unnecessary headers, footers, or extraneous information that could affect the results.
         - Check that your CSV file doesn't have any missing or inconsistent values, as they may impact the accuracy of the responses.
-        - NOTE, the LLM answer is limited to the quality of your prompt, so please spend time prompt engineering.
+        - NOTE, the LLM answer is limited to the quality of your prompt, so please spend time prompt engineering. Also, the LLM can only answer questions related to your upload.
         
         Backend Script: https://github.com/christianingul/LangChain_Pincecone_Implementation/blob/main/app.py
         ''')
