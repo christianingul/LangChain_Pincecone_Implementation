@@ -8,8 +8,8 @@ from langchain import VectorDBQA, OpenAI
 import pinecone
 
 def main():
-    st.set_page_config(page_title="Ask your Data")
-    st.header("Ask your Data 💬")
+    st.set_page_config(page_title="Ask Your Own data :D")
+    st.header("Let an LLM Interact With Your Own data!")
 
     password_secret = st.secrets.get("PASSWORD")
     openai_secret = st.secrets.get("openai")
@@ -33,7 +33,25 @@ def main():
         pdf_file_handling()
 
 def pdf_file_handling():
-    st.markdown('### PDF File Handling')
+    st.markdown('### PDF File Question & Answering💬)')
+    st.markdown('''
+        Upload your PDF file using the file uploader below. Make sure the PDF file contains the relevant data you want to ask questions about.
+        
+        What goes on behind the scenes?
+        
+        1. First, the user-provided PDF file is split into text chunks in order to prepare it to be embedded (this is so we can stay below OpenAI's token limit).
+        2. Followingly, the text chunks are passed into OpenAI's embedding model, where text chunks are converted to vectors.
+        3. The vectors derived from the embedding process are uploaded into a vector database (Pinecone).
+        4. The user input (question) is now passed into Pinecone's vector database as a query, which goes through the same cycle as the PDF.
+        5. We then perform a similarity search using the query vector to find relevant vectors. Finally, Langchain extracts the relevant vectors identified by the similarity search and converts them back into text chunks.
+        6. Lastly, the relevant text chunks are passed along with the user question to the LLM. Now, the LLM has both the relevant information and the question.
+                
+        **Best Practices:**
+
+        - Use PDF files that are text-based rather than scanned images. Text-based PDFs provide better results as the text can be extracted accurately.
+        - Verify that the PDF is properly formatted and readable. In some cases, poorly formatted or corrupted PDFs may not yield accurate results.
+        - NOTE, the LLM answer is limited to the quality of your prompt, so please spend time prompt engineering.
+        ''')
     user_pdf = st.file_uploader("Upload your PDF file", type="pdf")
 
     if user_pdf is not None:
@@ -84,7 +102,31 @@ def process_pdf_and_run_agent(user_pdf, user_question):
 
 
 def csv_file_handling():
-    st.markdown('### CSV File Handling')
+    st.markdown('### CSV Agent')
+    st.markdown('''
+        Upload your CSV file using the file uploader below. Ensure that the CSV file contains structured data that can be processed by the tool.
+        
+        What happens when you upload a CSV file? Behind the scenes, LangChain's panda's data frame agent is running. The agent can be thought of as a tool that can interact with its environment and make its own decisions. Underneath the hood of the agent is an LLM.
+        
+        CSV Agent Flow:
+        
+        1. The LangChain panda's data frame agent receives an input (question); to understand what to do, it passes the input to an LLM (its own reasoning engine).
+        2. The reasoning engine (LLM) will think of a solution. In our case, it realizes it needs to perform an action, and that is to access the CSV file provided by the user.
+        3. Further, the LLM will realize from the agent's tool description list (the LLM is provided the list with the user question), that it can access the CSV file through the pandas data frame tool.
+        5. After the LLM executes some input (python code) through the pandas data frame tool (agent), the output is observed, and if it is satisfactory, the results are displayed to the user.
+        6. However, this doesn't always happen; in that case, the process will restart, and the LLM could choose to try a different tool and strategy.
+        7. This process continues until a stopping criterion (often a reasonable answer) is met and the results are displayed.
+
+        **Best Practices:**
+
+        - Organize your data in a tabular format, with each column representing a specific attribute or feature.
+        - Make sure your CSV file doesn't contain unnecessary headers, footers, or extraneous information that could affect the results.
+        - Check that your CSV file doesn't have any missing or inconsistent values, as they may impact the accuracy of the responses.
+        - NOTE, the LLM answer is limited to the quality of your prompt, so please spend time prompt engineering.
+        
+        Backend Script: https://github.com/christianingul/LangChain_Pincecone_Implementation/blob/main/app.py
+        ''')
+
     user_csv = st.file_uploader("Upload your CSV file", type="csv")
 
     if user_csv is not None:
