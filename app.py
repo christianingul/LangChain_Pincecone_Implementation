@@ -51,7 +51,7 @@ def pdf_file_handling():
         - Use PDF files that are text-based rather than scanned images. Text-based PDFs provide better results as the text can be extracted accurately.
         - Verify that the PDF is properly formatted and readable. In some cases, poorly formatted or corrupted PDFs may not yield accurate results.
         - NOTE, the LLM answer is limited to the quality of your prompt, so please spend time prompt engineering. Also, the LLM can only answer questions related to your upload.
-        - IMPORTANT: MAKE SURE YOU SPECIFY THE NAME OF THE FILE YOU UPLOAD: "Focus only on xxx.pdf. Tell me the main theme, and some interesting side-notes."
+        - IMPORTANT: You are querying a Vector DB, so questions need to be specific: If I upload a resume, "What are person xxx skills?"
         ''')
     user_pdf = st.file_uploader("Upload your PDF file", type="pdf")
 
