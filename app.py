@@ -3,6 +3,7 @@ from PyPDF2 import PdfReader
 from langchain.agents import create_csv_agent
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.chat_models import ChatOpenAI
 from langchain.vectorstores import Pinecone
 from langchain import VectorDBQA, OpenAI
 import pinecone
@@ -92,7 +93,7 @@ def process_pdf_and_run_agent(user_pdf, user_question):
 )
     docsearch = Pinecone.from_texts(chunks, embeddings, index_name="pdf-embeddings-index")
 
-    qa = VectorDBQA.from_chain_type(llm=OpenAI(model_name='gpt-3.5-turbo', openai_api_key=openai_api_key
+    qa = VectorDBQA.from_chain_type(llm=ChatOpenAI(model_name='gpt-3.5-turbo', openai_api_key=openai_api_key
 ),
                                     chain_type="stuff", vectorstore=docsearch, return_source_documents=True)
     response = qa({"query": user_question})
@@ -145,7 +146,7 @@ def create_agent(user_csv):
     openai_api_key = openai_secret.get("key")
 
 
-    openai = OpenAI(openai_api_key=openai_api_key
+    openai = ChatOpenAI(openai_api_key=openai_api_key
                     , temperature=0, model_name='gpt-3.5-turbo')
     csv_agent = create_csv_agent(openai, path=user_csv, verbose=True)
     return csv_agent
