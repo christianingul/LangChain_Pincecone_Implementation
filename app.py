@@ -6,6 +6,8 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.chat_models import ChatOpenAI
 from langchain.vectorstores import Pinecone
 from langchain import VectorDBQA, OpenAI
+import tempfile
+import shutil
 import pinecone
 
 def main():
