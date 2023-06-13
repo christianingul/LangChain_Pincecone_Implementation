@@ -141,14 +141,17 @@ def csv_file_handling():
 
 #This one is linked back to the .csv_py, where it takes the user_csv, and installs the pandas_agent.
 def create_agent(user_csv):
-
     openai_secret = st.secrets.get("openai")
     openai_api_key = openai_secret.get("key")
 
+    # Save uploaded file to a temporary location
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".csv") as fp:
+        shutil.copyfileobj(user_csv, fp)
+        temp_csv_path = fp.name
 
     openai = ChatOpenAI(openai_api_key=openai_api_key
-                    , temperature=0, model_name='gpt-3.5-turbo')
-    csv_agent = create_csv_agent(openai, path=user_csv, verbose=True)
+                        , temperature=0, model_name='gpt-3.5-turbo')
+    csv_agent = create_csv_agent(openai, path=temp_csv_path, verbose=True)
     return csv_agent
 
 #Here the agent and the user question are run
